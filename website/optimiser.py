@@ -1,4 +1,4 @@
-def optimize(list_of_store_data: list[list[dict[str:list[list]]]]) -> list:
+def optimize(list_of_store_data: list[list[dict[str:list[list]]]], quanities: dict[str:[str, float]) -> list:
     for store in list_of_store_data:
         for item in store:
             
