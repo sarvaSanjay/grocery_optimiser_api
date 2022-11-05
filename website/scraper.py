@@ -112,7 +112,7 @@ def get_metro_data(search: str) -> list[dict]:
         name_classes.append(name_class)
         price_classes.append(price_class)
         #unit_classes.append(unit_class)
-    print(price_classes)
+    
 
     names = []
     price_per_100grams = []
