@@ -14,7 +14,7 @@ options.add_argument('--headless')
 service = ChromeService(executable_path="/usr/lib/chromium-browser/chromedriver")
 driver = webdriver.Chrome(service=service, options=options)
 
-def get_data(store: int, search: str) -> list[dict]
+def get_data(store: int, search: str) -> list[dict]:
     # Gets data for the store represented by an integer "store" and for the search "search". 
     # 0 for nofrills
     # 1 for loblaws
@@ -26,7 +26,7 @@ def get_data(store: int, search: str) -> list[dict]
     elif store == 2:
         get_metro_data(search)
      else:
-        return "Error. There is no store associated with that number!"
+        raise Exception("Error. There is no store associated with that number!")
         
         
 
