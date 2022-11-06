@@ -97,6 +97,8 @@ def get_nofrills_data(search: str) -> list[dict]:
         i = i.replace("]", " ")
         i = i.replace("$", " ")
         i = i.replace(",", " ")
+        i = i.replace("/", " ")
+
         CANNOT = True
         try:
             float(i)
@@ -104,14 +106,21 @@ def get_nofrills_data(search: str) -> list[dict]:
             finalprice_per_100grams.append('0')
             CANNOT = False
         if CANNOT:
-            finalprice_per_100grams.append(i)
+            finalprice_per_100grams.append(i.replace(" ", ""))
 
     finalunits = []
+
     for i in units:
+        i = i.replace("[", " ")
+        i = i.replace("]", " ")
+        i = i.replace("$", " ")
+        i = i.replace(",", " ")
+        i = i.replace("/", " ")
         if '100g' not in i and not "100ml" in i:
             finalunits.append('No Units')
         else:
-            finalunits.append(i)
+            finalunits.append(i.replace(" ", ""))
+
 
     final_list = []
     for i in range(0, len(names)):
@@ -189,14 +198,19 @@ def get_loblaws_data(search: str) -> list[dict]:
             finalprice_per_100grams.append('0')
             CANNOT = False
         if CANNOT:
-            finalprice_per_100grams.append(i)
+            finalprice_per_100grams.append(i.replace(" ", ""))
 
     finalunits = []
     for i in units:
+        i = i.replace("[", " ")
+        i = i.replace("]", " ")
+        i = i.replace("$", " ")
+        i = i.replace(",", " ")
+        i = i.replace("/", " ")
         if '100g' not in i and not "100ml" in i:
             finalunits.append('No Units')
         else:
-            finalunits.append(i)
+            finalunits.append(i.replace(" ", ""))
 
     final_list = []
     for i in range(0, len(names)):
@@ -282,14 +296,19 @@ def get_metro_data(search: str) -> list[dict]:
             finalprice_per_100grams.append('0')
             CANNOT = False
         if CANNOT:
-            finalprice_per_100grams.append(i)
+            finalprice_per_100grams.append(i.replace(" ", ""))
 
     finalunits = []
     for i in fixed_units:
+        i = i.replace("[", " ")
+        i = i.replace("]", " ")
+        i = i.replace("$", " ")
+        i = i.replace(",", " ")
+        i = i.replace("/", " ")
         if '100g' not in i and not "100ml" in i:
             finalunits.append('No Units')
         else:
-            finalunits.append(i)
+            finalunits.append(i.replace(" ", ""))
 
     final_list = []
     for i in range(0, len(names)):
