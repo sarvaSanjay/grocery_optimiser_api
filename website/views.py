@@ -108,7 +108,7 @@ def optimise():
     for i in range(3):
         for order in orders:
             data[order.item] = get_data(i, order.item)
-        result_data[i] = optimizer(data)
+        result_data[i] = optimizer(data, order_mapping)
     minim_cost = result_data[0][0]
     cheapest_store = 0
     for key in result_data:
