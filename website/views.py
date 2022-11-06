@@ -13,16 +13,17 @@ def index():
 def order():
     data = request.get_json()
     session_id = data['session_id']
-    orders = Orders.query.filter_by(user_id=session_id).first()
+    orders = Orders.query.filter_by(user_id=session_id).all()
     if not orders:
         return jsonify(message='Not a previous user', category='not found')
+    
     shopping_list = []
     for item in orders:
         order = {
             'name': item.item,
             'number': item.number,
             'units': item.unit,
-            'estimated_cost': item.estimated_cost
+            'estimated_cost': item.estimated_price
         }
         shopping_list.append(order)
     return jsonify(order=shopping_list)
