@@ -66,7 +66,7 @@ def edit():
     user_id = data['session_id']
     quantity = data['quantity']
     item = data['name']
-    order = Orders.query.filter_by(user_id=user_id, item=item)
+    order = Orders.query.filter_by(user_id=user_id, item=item).first()
     order.number = quantity
     db.session.commit()
     return jsonify(message='edited', category='success')
@@ -76,7 +76,7 @@ def delete_order():
     data = request.get_json()
     user_id = data['session_id']
     item = data['name']
-    order = Orders.query.filter_by(user_id=user_id, item=item)
+    order = Orders.query.filter_by(user_id=user_id, item=item).first()
     order.delete()
     return jsonify(message='Deleted!', category='success')
 
