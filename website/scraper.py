@@ -234,7 +234,6 @@ def get_metro_data(search: str) -> list[dict]:
     #     units.append(soup.get_text())
 
     # This code is to deal with cases when no price or units can be found.
-    print(price_per_100grams)
 
     # Separating prices and units
     fixed_price_per100grams = []
@@ -243,9 +242,6 @@ def get_metro_data(search: str) -> list[dict]:
         item = element.replace("[\n", "").replace("\n]", "").replace("/", "").split(" ")
         fixed_price_per100grams.append(item[0])
         fixed_units.append(item[1])
-
-    print(fixed_price_per100grams)
-    print(fixed_units)
 
     finalprice_per_100grams = []
 
