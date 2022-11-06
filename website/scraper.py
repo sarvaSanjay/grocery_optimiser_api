@@ -79,7 +79,7 @@ def get_nofrills_data(search: str) -> list[dict]:
     units = []
     for i in name_classes:
         soup = BeautifulSoup(str(i), 'lxml')
-        names.append(soup.get_text())
+        names.append(soup.get_text().strip(" "))
     for i in price_classes:
         soup = BeautifulSoup(str(i), 'lxml')
         price_per_100grams.append(soup.get_text())
@@ -174,7 +174,7 @@ def get_loblaws_data(search: str) -> list[dict]:
     units = []
     for i in name_classes:
         soup = BeautifulSoup(str(i), 'lxml')
-        names.append(soup.get_text())
+        names.append(soup.get_text().strip(" "))
     for i in price_classes:
         soup = BeautifulSoup(str(i), 'lxml')
         price_per_100grams.append(soup.get_text())
@@ -260,7 +260,7 @@ def get_metro_data(search: str) -> list[dict]:
     # units = []
     for i in name_classes:
         soup = BeautifulSoup(str(i), 'lxml')
-        names.append(soup.get_text())
+        names.append(soup.get_text().strip(" "))
     for i in price_classes:
         soup = BeautifulSoup(str(i), 'lxml')
         price_per_100grams.append(soup.get_text())
