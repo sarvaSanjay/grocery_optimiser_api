@@ -6,9 +6,9 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 options = webdriver.ChromeOptions()
 options.add_argument('--ignore-certificate-errors')
 options.add_argument('--incognito')
+options.add_argument('--no-sandbox')
 options.add_argument('--headless')
-service = ChromeService(executable_path="/usr/lib/chromium-browser/chromedriver")
-driver = webdriver.Chrome(service=service, options=options)
+driver = webdriver.Chrome(options=options)
 
 wait_time = 5
 # This is how long the program waits in seconds before grabbing the website source. If it is too low then the program
