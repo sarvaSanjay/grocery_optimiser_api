@@ -9,10 +9,13 @@ def create_app():
     app.config['SECRET_KEY'] = 'asdfghjkl'
     db_path = path.join(path.dirname(__file__), DB_NAME)
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
-    db.init_app()
+    db.init_app(app)
 
     from .views import views
     app.register_blueprint(views, url_prefix='/')
+
+    with app.app_context():
+        db.create_all()
 
 
     return app

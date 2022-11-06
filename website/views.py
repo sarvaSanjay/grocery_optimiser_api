@@ -6,6 +6,9 @@ from .optimiser import optimizer
 
 views = Blueprint('views', __name__)
 
+@views.route('/', methods=['GET'])
+def index():
+    return 'Hello'
 @views.route('/order', methods=['POST'])
 def order():
     data = request.get_json()
@@ -51,7 +54,7 @@ def add_order():
     db.session.commit()
     return jsonify(unit=max_units, estimated_price=order.estimated_price)
     
-@views.route('/edit', methods='POST')
+@views.route('/edit', methods=['POST'])
 def edit():
     data = request.get_json()
     user_id = data['session_id']
