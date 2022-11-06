@@ -102,7 +102,7 @@ def optimise():
     orders = Orders.query.filter_by(user_id=user_id)
     
     return jsonify(winner='No Frills', 
-    shopping_lists={'No Frills': [{'name': 'Carrots', 'price': 0.52},
+    shopping_lists={'NoFrills': [{'name': 'Carrots', 'price': 0.52},
                                 {'name': 'Regular Ripple Cut Potato Chips', 'price': 1.30},
                                 {'name': 'Strawberry Passion Awareness Fruit Beverage', 'price': 0.13}],
     'Loblaws': [{'name': 'Peas & Carrots, Club Size', 'price': 1.48},
