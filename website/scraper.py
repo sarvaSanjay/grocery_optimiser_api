@@ -10,6 +10,10 @@ options.add_argument('--headless')
 service = ChromeService(executable_path="/usr/lib/chromium-browser/chromedriver")
 driver = webdriver.Chrome(service=service, options=options)
 
+wait_time = 5
+# This is how long the program waits in seconds before grabbing the website source. If it is too low then the program
+# might break completely.
+
 
 def get_data(store: int, search: str) -> list[dict]:
     # Gets data for the store represented by an integer "store" and for the search "search".
@@ -33,7 +37,7 @@ def get_nofrills_data(search: str) -> list[dict]:
     # If no price can be found, then the price is 0.0.
     # If no units can be found, then unit is "No Units"
     driver.get('https://www.nofrills.ca/search?search-bar=' + search)
-    time.sleep(10)
+    time.sleep(wait_time)
     source = driver.page_source
 
     # def get_data_from_search()
@@ -113,7 +117,7 @@ def get_loblaws_data(search: str) -> list[dict]:
     # If no units can be found, then unit is "No Units"
 
     driver.get('https://www.loblaws.ca/search?search-bar=' + search)
-    time.sleep(10)
+    time.sleep(wait_time)
     source = driver.page_source
 
     # def get_data_from_search()
@@ -194,7 +198,7 @@ def get_metro_data(search: str) -> list[dict]:
     # If no price can be found, then the price is 0.0.
     # If no units can be found, then unit is "No Units"
     driver.get('https://www.metro.ca/en/online-grocery/search?filter=' + search)
-    time.sleep(10)
+    time.sleep(wait_time)
     source = driver.page_source
 
     # def get_data_from_search()
@@ -235,6 +239,7 @@ def get_metro_data(search: str) -> list[dict]:
 
     # This code is to deal with cases when no price or units can be found.
 
+
     # Separating prices and units
     fixed_price_per100grams = []
     fixed_units = []
@@ -242,6 +247,7 @@ def get_metro_data(search: str) -> list[dict]:
         item = element.replace("[\n", "").replace("\n]", "").replace("/", "").split(" ")
         fixed_price_per100grams.append(item[0])
         fixed_units.append(item[1])
+
 
     finalprice_per_100grams = []
 
