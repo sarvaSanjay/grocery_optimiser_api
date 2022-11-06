@@ -18,4 +18,4 @@ def optimizer(store: dict, quantities: dict[str, float]) -> list:
                         name = each[y]
         estimated_price += r
         list_of_items += [{'name':name, 'price':math.round(r,2)}]
-    return  [estimated_price]+list_of_items
+    return  [estimated_price]+[list_of_items]
