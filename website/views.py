@@ -3,6 +3,7 @@ from . import db
 from .scraper import get_data
 from .models import Orders
 from .optimiser import optimizer
+import threading
 
 views = Blueprint('views', __name__)
 
@@ -28,6 +29,13 @@ def order():
         shopping_list.append(order)
     return jsonify(order=shopping_list)
 
+def nofrills_data(data, item_name):
+    data[0] = get_data(0, item_name)
+def loblaws_data(data, item_name):
+    data[1] = get_data(1, item_name)
+def metro_data(data, item_name):
+    data[2] = get_data(2, item_name)
+
 @views.route('/addorder', methods=['POST'])
 def add_order():
     data = request.get_json()
@@ -35,10 +43,18 @@ def add_order():
     user_id = data['session_id']
     number = data['number']
 
-    nofrills_data = get_data(0, item_name)
-    loblaws_data = get_data(1, item_name)
-    metro_data = get_data(2, item_name)
-    total_data = metro_data + loblaws_data + nofrills_data
+    datan = [0, 1, 2]
+    x = threading.Thread(target=nofrills_data, args=(datan, item_name))
+    y = threading.Thread(target=loblaws_data, args=(datan, item_name))
+    z = threading.Thread(target=metro_data, args=(datan, item_name))
+    x.start()
+    y.start()
+    z.start()
+    x.join()
+    y.join()
+    z.join()
+
+    total_data = datan[2] + datan[1] + datan[0]
     possible_units = {}
     sum_cost = 0
     for item in total_data:
@@ -66,21 +82,22 @@ def edit():
     user_id = data['session_id']
     quantity = data['quantity']
     item = data['name']
-    order = Orders.query.filter_by(user_id=user_id, item=item)
-    order.number = quantity
+    order = Orders.query.filter_by(user_id=user_id, item=item).first()
+    order.number = quantity 
     db.session.commit()
-    return jsonify(message='edited', category='success')
+    return jsonify(message='edited', category='success') #problem: you need to update the lowest price
 
 @views.route('/delete', methods=['POST'])
 def delete_order():
     data = request.get_json()
     user_id = data['session_id']
     item = data['name']
-    order = Orders.query.filter_by(user_id=user_id, item=item)
-    order.delete()
+    order = Orders.query.filter_by(user_id=user_id, item=item).first()
+    db.session.delete(order)
+    db.session.commit()
     return jsonify(message='Deleted!', category='success')
 
-@views.route('/optimise', methods=['POST'])
+@views.route('/optimize', methods=['POST'])
 def optimise():
     data = request.get_json()
     user_id = data['session_id']
