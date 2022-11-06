@@ -59,7 +59,6 @@ def add_order():
     sum_cost = 0
     for item in total_data:
         possible_units[item['units']] = possible_units.get(item['units'], 0) + 1
-        print(item['units'])
         sum_cost += item['price']
     average_cost = sum_cost / len(total_data)
     if '100g' in possible_units and '100ml' in possible_units:
@@ -92,22 +91,25 @@ def delete_order():
     data = request.get_json()
     user_id = data['session_id']
     item = data['name']
-    order = Orders.query.filter_by(user_id=user_id, item=item).first()
-    order.delete()
+    Orders.query.filter_by(user_id=user_id, item=item).delete()
+    db.session.commit()
     return jsonify(message='Deleted!', category='success')
 
 @views.route('/optimize', methods=['POST'])
 def optimise():
-    data = request.get_json()
-    user_id = data['session_id']
+    data1 = request.get_json()
+    user_id = data1['session_id']
     orders = Orders.query.filter_by(user_id=user_id)
     order_mapping = {}
     result_data = {}
     for order in orders:
         order_mapping[order.item] = order.number
     for i in range(3):
+        data = {}
         for order in orders:
             data[order.item] = get_data(i, order.item)
+            print(data)
+        print(data)
         result_data[i] = optimizer(data, order_mapping)
     minim_cost = result_data[0][0]
     cheapest_store = 0
