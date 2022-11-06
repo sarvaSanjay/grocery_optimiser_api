@@ -41,11 +41,16 @@ def add_order():
     possible_units = {}
     sum_cost = 0
     for item in total_data:
-        possible_units[item['units']] += possible_units.get(item['units'], 0)
+        possible_units[item['units']] = possible_units.get(item['units'], 0) + 1
+        print(item['units'])
         sum_cost += item['price']
     average_cost = sum_cost / len(total_data)
-    max_val = max(possible_units.values())
-    if '100g' == max_val:
+    if '100g' in possible_units and '100ml' in possible_units:
+        if possible_units['100g'] >= possible_units['100ml']:
+            max_units = 'g'
+        else:
+            max_units = 'ml'
+    elif '100g' in possible_units:
         max_units = 'g'
     else:
         max_units = 'ml'
@@ -61,7 +66,7 @@ def edit():
     quantity = data['quantity']
     item = data['name']
     order = Orders.query.filter_by(user_id=user_id, item=item)
-    order.quantity = quantity
+    order.number = quantity
     db.session.commit()
     return jsonify(message='edited', category='success')
 

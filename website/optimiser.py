@@ -14,7 +14,7 @@ def optimizer(store: dict, quantities: dict[str, float]) -> list:
         for each in store[item]:
             if value[each] == r:
                 for y in each:
-                    if y =="Name":
+                    if y =="name":
                         name = each[y]
         estimated_price += r
         list_of_items += [{'name':name, 'price':math.round(r,2)}]
