@@ -27,6 +27,7 @@ def get_data(store: int, search: str) -> list[dict]:
     If no price can be found, then the price is 0.0.
     If no units can be found, then unit is "No Units".
     !"price" is price PER 100 GRAMS!
+    If the search returns nothing, then the empty list is returned. 
 
     """
     if store == 0:
@@ -47,6 +48,7 @@ def get_nofrills_data(search: str) -> list[dict]:
     If no price can be found, then the price is 0.0.
     If no units can be found, then unit is "No Units".
      !"price" is price PER 100 GRAMS!
+     If the search returns nothing, then the empty list is returned. 
     """
     driver.get('https://www.nofrills.ca/search?search-bar=' + search)
     time.sleep(wait_time)
@@ -138,6 +140,7 @@ def get_loblaws_data(search: str) -> list[dict]:
       If no price can be found, then the price is 0.0.
       If no units can be found, then unit is "No Units".
       !"price" is price PER 100 GRAMS!
+      If the search returns nothing, then the empty list is returned. 
       """
 
     driver.get('https://www.loblaws.ca/search?search-bar=' + search)
@@ -228,6 +231,7 @@ def get_metro_data(search: str) -> list[dict]:
       If no price can be found, then the price is 0.0.
       If no units can be found, then unit is "No Units".
       !"price" is price PER 100 GRAMS!
+      If the search returns nothing, then the empty list is returned. 
       """
     driver.get('https://www.metro.ca/en/online-grocery/search?filter=' + search)
     time.sleep(wait_time)
