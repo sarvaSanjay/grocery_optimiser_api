@@ -16,10 +16,19 @@ wait_time = 5
 
 
 def get_data(store: int, search: str) -> list[dict]:
-    # Gets data for the store represented by an integer "store" and for the search "search".
-    # 0 for nofrills
-    # 1 for loblaws
-    # 2 for metro
+    """
+    Returns a dictionary for the store represented by an integer "store" and for the search "search".
+    0 for nofrills,
+    1 for loblaws,
+    2 for metro.
+    The dictionaries are written with three entries:
+    ["name": name[str], "price": price[float], "unit": unit[str]].
+    "name" is name of item.
+    If no price can be found, then the price is 0.0.
+    If no units can be found, then unit is "No Units".
+    !"price" is price PER 100 GRAMS!
+
+    """
     if store == 0:
         return get_nofrills_data(search)
     elif store == 1:
@@ -31,11 +40,14 @@ def get_data(store: int, search: str) -> list[dict]:
 
 
 def get_nofrills_data(search: str) -> list[dict]:
-    # Given a search, returns a list of dictionaries. The dictionaries are written with three entries:
-    # ["name": name[str], "price": price[float], "unit": unit[str]]
-    # "name" is name of item
-    # If no price can be found, then the price is 0.0.
-    # If no units can be found, then unit is "No Units"
+    """
+    Given a search, returns a list of dictionaries. The dictionaries are written with three entries:
+    ["name": name[str], "price": price[float], "unit": unit[str]].
+    "name" is name of item.
+    If no price can be found, then the price is 0.0.
+    If no units can be found, then unit is "No Units".
+     !"price" is price PER 100 GRAMS!
+    """
     driver.get('https://www.nofrills.ca/search?search-bar=' + search)
     time.sleep(wait_time)
     source = driver.page_source
@@ -75,6 +87,7 @@ def get_nofrills_data(search: str) -> list[dict]:
         soup = BeautifulSoup(str(i), 'lxml')
         units.append(soup.get_text())
 
+
     # This code is to deal with cases when no price or units can be found.
 
     finalprice_per_100grams = []
@@ -103,17 +116,20 @@ def get_nofrills_data(search: str) -> list[dict]:
     final_list = []
     for i in range(0, len(names)):
         final_list.append({"name": names[i].strip("[]"), "price": float(finalprice_per_100grams[i]),
-                           "units": finalunits[i].strip("[]/")})
+                           "units": finalunits[i]})
 
     return final_list
 
 
 def get_loblaws_data(search: str) -> list[dict]:
-    # Given a search, returns a list of dictionaries. The dictionaries are written with three entries:
-    # ["name": name[str], "price": price[float], "unit": unit[str]]
-    # "name" is name of item
-    # If no price can be found, then the price is 0.0.
-    # If no units can be found, then unit is "No Units"
+    """
+      Given a search, returns a list of dictionaries. The dictionaries are written with three entries:
+      ["name": name[str], "price": price[float], "unit": unit[str]].
+      "name" is name of item.
+      If no price can be found, then the price is 0.0.
+      If no units can be found, then unit is "No Units".
+      !"price" is price PER 100 GRAMS!
+      """
 
     driver.get('https://www.loblaws.ca/search?search-bar=' + search)
     time.sleep(wait_time)
@@ -191,11 +207,14 @@ def get_loblaws_data(search: str) -> list[dict]:
 
 
 def get_metro_data(search: str) -> list[dict]:
-    # Given a search, returns a list of dictionaries. The dictionaries are written with three entries:
-    # ["name": name[str], "price": price[float], "unit": unit[str]]
-    # "name" is name of item
-    # If no price can be found, then the price is 0.0.
-    # If no units can be found, then unit is "No Units"
+    """
+      Given a search, returns a list of dictionaries. The dictionaries are written with three entries:
+      ["name": name[str], "price": price[float], "unit": unit[str]].
+      "name" is name of item.
+      If no price can be found, then the price is 0.0.
+      If no units can be found, then unit is "No Units".
+      !"price" is price PER 100 GRAMS!
+      """
     driver.get('https://www.metro.ca/en/online-grocery/search?filter=' + search)
     time.sleep(wait_time)
     source = driver.page_source
