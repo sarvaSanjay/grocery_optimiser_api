@@ -13,7 +13,7 @@ def index():
 def order():
     data = request.get_json()
     session_id = data['session_id']
-    orders = Orders.query.filter_by(user_id=session_id)
+    orders = Orders.query.filter_by(user_id=session_id).first()
     if not orders:
         return jsonify(message='Not a previous user', category='not found')
     shopping_list = []
