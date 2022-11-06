@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, Blueprint
 from flask_sqlalchemy import SQLAlchemy
 from os import path
 
@@ -10,6 +10,9 @@ def create_app():
     db_path = path.join(path.dirname(__file__), DB_NAME)
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
     db.init_app()
-    
+
+    from .views import views
+    app.register_blueprint(views, url_prefix='/')
+
 
     return app
