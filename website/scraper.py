@@ -74,7 +74,6 @@ def get_nofrills_data(search: str) -> list[dict]:
     for i in unit_classes:
         soup = BeautifulSoup(str(i), 'lxml')
         units.append(soup.get_text())
-    print(price_per_100grams)
 
     # This code is to deal with cases when no price or units can be found.
 
