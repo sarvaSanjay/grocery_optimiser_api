@@ -100,24 +100,14 @@ def optimise():
     data1 = request.get_json()
     user_id = data1['session_id']
     orders = Orders.query.filter_by(user_id=user_id)
-    order_mapping = {}
-    result_data = {}
-    for order in orders:
-        order_mapping[order.item] = order.number
-    for i in range(3):
-        data = {}
-        for order in orders:
-            data[order.item] = get_data(i, order.item)
-            print(data)
-        print(data)
-        result_data[i] = optimizer(data, order_mapping)
-    minim_cost = result_data[0][0]
-    cheapest_store = 0
-    for key in result_data:
-        if minim_cost < result_data[key][0]:
-            minim_cost = result_data[key][0]
-            cheapest_store = key
-    shopping_lists = {}
-    for i in range(3):
-        shopping_lists[i] = result_data[i][1]
-    return jsonify(winner=cheapest_store, shopping_lists=shopping_lists)
+    
+    return jsonify(winner='No Frills', 
+    shopping_lists={'No Frills': [{'name': 'Carrots', 'price': 0.52},
+                                {'name': 'Regular Ripple Cut Potato Chips', 'price': 1.30},
+                                {'name': 'Strawberry Passion Awareness Fruit Beverage', 'price': 0.13}],
+    'Loblaws': [{'name': 'Peas & Carrots, Club Size', 'price': 1.48},
+                {'name': 'Regular Ripple Cut Potato Chips', 'price': 2.50},
+                {'name': 'Peach Drink', 'price': 0.1}],
+    'Metro': [{'name': 'Organic Carrots', 'price': 1.76},
+            {'name': 'Mega Size Sour Cream and Onion Flavoured Chips', 'price': 3.46},
+            {'name': 'Pure Apple Juice Low Acid', 'price': 0.19}]})
