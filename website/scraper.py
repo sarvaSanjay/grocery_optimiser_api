@@ -2,10 +2,6 @@ from bs4 import BeautifulSoup
 import time
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
-import requests
-
-
-import requests
 
 options = webdriver.ChromeOptions()
 options.add_argument('--ignore-certificate-errors')
@@ -14,21 +10,21 @@ options.add_argument('--headless')
 service = ChromeService(executable_path="/usr/lib/chromium-browser/chromedriver")
 driver = webdriver.Chrome(service=service, options=options)
 
+
 def get_data(store: int, search: str) -> list[dict]:
-    # Gets data for the store represented by an integer "store" and for the search "search". 
+    # Gets data for the store represented by an integer "store" and for the search "search".
     # 0 for nofrills
     # 1 for loblaws
     # 2 for metro
     if store == 0:
-        get_nofrills_data(search)
+        return get_nofrills_data(search)
     elif store == 1:
-        get_loblaws_data(search)
+        return get_loblaws_data(search)
     elif store == 2:
-        get_metro_data(search)
-     else:
+        return get_metro_data(search)
+    else:
         raise Exception("Error. There is no store associated with that number!")
-        
-        
+
 
 def get_nofrills_data(search: str) -> list[dict]:
     # Given a search, returns a list of dictionaries. The dictionaries are written with three entries:
@@ -36,7 +32,6 @@ def get_nofrills_data(search: str) -> list[dict]:
     # "name" is name of item
     # If no price can be found, then the price is 0.0.
     # If no units can be found, then unit is "No Units"
-    # The units can only be "100g" or "100ml"
     driver.get('https://www.nofrills.ca/search?search-bar=' + search)
     time.sleep(10)
     source = driver.page_source
@@ -75,15 +70,24 @@ def get_nofrills_data(search: str) -> list[dict]:
     for i in unit_classes:
         soup = BeautifulSoup(str(i), 'lxml')
         units.append(soup.get_text())
+    print(price_per_100grams)
 
     # This code is to deal with cases when no price or units can be found.
 
     finalprice_per_100grams = []
 
     for i in price_per_100grams:
-        if i == '[]':
+        i = i.replace("[", " ")
+        i = i.replace("]", " ")
+        i = i.replace("$", " ")
+        i = i.replace(",", " ")
+        CANNOT = True
+        try:
+            float(i)
+        except:
             finalprice_per_100grams.append('0')
-        else:
+            CANNOT = False
+        if CANNOT:
             finalprice_per_100grams.append(i)
 
     finalunits = []
@@ -95,10 +99,11 @@ def get_nofrills_data(search: str) -> list[dict]:
 
     final_list = []
     for i in range(0, len(names)):
-        final_list.append({"name": names[i].strip("[]"), "price": float(finalprice_per_100grams[i].strip("[]$")),
+        final_list.append({"name": names[i].strip("[]"), "price": float(finalprice_per_100grams[i]),
                            "units": finalunits[i].strip("[]/")})
 
     return final_list
+
 
 def get_loblaws_data(search: str) -> list[dict]:
     # Given a search, returns a list of dictionaries. The dictionaries are written with three entries:
@@ -106,13 +111,10 @@ def get_loblaws_data(search: str) -> list[dict]:
     # "name" is name of item
     # If no price can be found, then the price is 0.0.
     # If no units can be found, then unit is "No Units"
-    # The units can only be "100g" or "100ml"
-
 
     driver.get('https://www.loblaws.ca/search?search-bar=' + search)
     time.sleep(10)
     source = driver.page_source
-
 
     # def get_data_from_search()
 
@@ -123,7 +125,7 @@ def get_loblaws_data(search: str) -> list[dict]:
     # something = soup.find_all("a")
 
     item_selector = soup.find_all('div', class_="product-tile product-tile--marketplace")
-    #print(item_selector)
+    # print(item_selector)
 
     name_classes = []
     price_classes = []
@@ -136,8 +138,8 @@ def get_loblaws_data(search: str) -> list[dict]:
         name_classes.append(name_class)
         price_classes.append(price_class)
         unit_classes.append(unit_class)
-   # print(price_classes)
-    #print(name_classes)
+    # print(price_classes)
+    # print(name_classes)
 
     names = []
     price_per_100grams = []
@@ -157,6 +159,10 @@ def get_loblaws_data(search: str) -> list[dict]:
     finalprice_per_100grams = []
 
     for i in price_per_100grams:
+        i = i.replace("[", " ")
+        i = i.replace("]", " ")
+        i = i.replace("$", " ")
+        i = i.replace(",", " ")
         CANNOT = True
         try:
             float(i)
@@ -165,7 +171,6 @@ def get_loblaws_data(search: str) -> list[dict]:
             CANNOT = False
         if CANNOT:
             finalprice_per_100grams.append(i)
-
 
     finalunits = []
     for i in units:
@@ -176,7 +181,7 @@ def get_loblaws_data(search: str) -> list[dict]:
 
     final_list = []
     for i in range(0, len(names)):
-        final_list.append({"name": names[i].strip("[]"), "price": float(finalprice_per_100grams[i].strip("[]$")),
+        final_list.append({"name": names[i].strip("[]"), "price": float(finalprice_per_100grams[i]),
                            "units": finalunits[i].strip("[]/")})
 
     return final_list
@@ -188,13 +193,9 @@ def get_metro_data(search: str) -> list[dict]:
     # "name" is name of item
     # If no price can be found, then the price is 0.0.
     # If no units can be found, then unit is "No Units"
-    # The units can only be "100g" or "100ml"
     driver.get('https://www.metro.ca/en/online-grocery/search?filter=' + search)
     time.sleep(10)
     source = driver.page_source
-
-
-
 
     # def get_data_from_search()
 
@@ -208,55 +209,63 @@ def get_metro_data(search: str) -> list[dict]:
 
     name_classes = []
     price_classes = []
-    #unit_classes = []
+    # unit_classes = []
     for i in item_selector:
         soup = BeautifulSoup(str(i), 'lxml')
         name_class = soup.find_all('div', class_='head__title')
         price_class = soup.find_all('div', class_='pricing__secondary-price')
-        unit_class = soup.find_all('span', class_='price__unit comparison-price-list__item__price__unit')
+        # unit_class = soup.find_all('span', class_='price__unit comparison-price-list__item__price__unit')
         name_classes.append(name_class)
         price_classes.append(price_class)
-        #unit_classes.append(unit_class)
-
+        # unit_classes.append(unit_class)
 
     names = []
     price_per_100grams = []
-    units = []
+    # units = []
     for i in name_classes:
         soup = BeautifulSoup(str(i), 'lxml')
         names.append(soup.get_text())
     for i in price_classes:
         soup = BeautifulSoup(str(i), 'lxml')
         price_per_100grams.append(soup.get_text())
+
     # for i in unit_classes:
     #     soup = BeautifulSoup(str(i), 'lxml')
     #     units.append(soup.get_text())
 
     # This code is to deal with cases when no price or units can be found.
+    print(price_per_100grams)
 
     # Separating prices and units
     fixed_price_per100grams = []
     fixed_units = []
     for element in price_per_100grams:
-        item = element.replace("\n", "").strip("/").split(" ")
+        item = element.replace("[\n", "").replace("\n]", "").replace("/", "").split(" ")
         fixed_price_per100grams.append(item[0])
         fixed_units.append(item[1])
 
-
-
-
-
+    print(fixed_price_per100grams)
+    print(fixed_units)
 
     finalprice_per_100grams = []
 
     for i in fixed_price_per100grams:
-        if i == '[]':
+        i = i.replace("[", " ")
+        i = i.replace("]", " ")
+        i = i.replace("$", " ")
+        i = i.replace(",", " ")
+
+        CANNOT = True
+        try:
+            float(i)
+        except:
             finalprice_per_100grams.append('0')
-        else:
+            CANNOT = False
+        if CANNOT:
             finalprice_per_100grams.append(i)
 
     finalunits = []
-    for i in units:
+    for i in fixed_units:
         if '100g' not in i and not "100ml" in i:
             finalunits.append('No Units')
         else:
@@ -264,10 +273,7 @@ def get_metro_data(search: str) -> list[dict]:
 
     final_list = []
     for i in range(0, len(names)):
-        final_list.append({"name": names[i].strip("[]"), "price": float(finalprice_per_100grams[i].strip("[]$")),
-                           "units": finalunits[i].strip("[]/")})
+        final_list.append({"name": names[i].strip("[]"), "price": float(finalprice_per_100grams[i]),
+                           "units": finalunits[i]})
 
     return final_list
-
-
-
