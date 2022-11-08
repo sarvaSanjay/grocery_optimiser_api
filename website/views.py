@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from . import db
 from .scraper import get_data
 from .models import Orders
-from .optimiser import optimizer
+from .optimiser import cheapest_list
 import threading
 
 views = Blueprint('views', __name__)
@@ -57,6 +57,7 @@ def add_order():
     total_data = datan[2] + datan[1] + datan[0]
     possible_units = {}
     sum_cost = 0
+
     for item in total_data:
         possible_units[item['units']] = possible_units.get(item['units'], 0) + 1
         sum_cost += item['price']
@@ -99,15 +100,21 @@ def delete_order():
 def optimise():
     data1 = request.get_json()
     user_id = data1['session_id']
-    orders = Orders.query.filter_by(user_id=user_id)
+    orders = Orders.query.filter_by(user_id=user_id).all()
+    shops = ['NoFrills', 'LobLaws', 'Metro']
+    result_data = {}
+    cheap_prices = {}
+    quantity_map = {}
+    for order in orders:
+        quantity_map[order.item] = order.number
+    for i in range(3):
+        data = {}
+        for order in orders:
+            data[order.item] = get_data(i, order.item)
+        result_data[shops[i]], cheap_prices[shops[i]] = cheapest_list(data, quantity_map)
+    for shop in shops:
+        if cheap_prices[shop] == min(cheap_prices.values()):
+            winner = shop
+
     
-    return jsonify(winner='No Frills', 
-    shopping_lists={'NoFrills': [{'name': 'Carrots', 'price': 0.52},
-                                {'name': 'Regular Ripple Cut Potato Chips', 'price': 1.30},
-                                {'name': 'Strawberry Passion Awareness Fruit Beverage', 'price': 0.13}],
-    'Loblaws': [{'name': 'Peas & Carrots, Club Size', 'price': 1.48},
-                {'name': 'Regular Ripple Cut Potato Chips', 'price': 2.50},
-                {'name': 'Peach Drink', 'price': 0.1}],
-    'Metro': [{'name': 'Organic Carrots', 'price': 1.76},
-            {'name': 'Mega Size Sour Cream and Onion Flavoured Chips', 'price': 3.46},
-            {'name': 'Pure Apple Juice Low Acid', 'price': 0.19}]})
+    return jsonify(winner= winner, shopping_lists= result_data)
